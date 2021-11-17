@@ -81,6 +81,7 @@ DATABASES = {
         'NAME': private_settings.DATABASE_NAME,
         'USER': private_settings.DATABASE_USER,
         'PASSWORD': private_settings.DATABASE_PASSWORD,
+        'HOST': 'localhost',
     }
 }
 
