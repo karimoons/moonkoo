@@ -37,9 +37,6 @@ def calculate_age(birthday, today):
     return today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
 
 def calculate_employee(excel_file, business_start_date):
-    print('type:', business_start_date)
-    print(business_start_date)
-
     df = pd.read_excel(excel_file)
         
     df['군복무개월수'] = df['군복무개월수'].fillna(0)
