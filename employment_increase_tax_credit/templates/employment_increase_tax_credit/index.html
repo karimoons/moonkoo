@@ -2,8 +2,12 @@
 
 <p>조세특례제한법 제29조의 7 (법 2021.11.11 시행, 시행령 2021.11.11 시행 반영)</p>
 
-<h3>사원 파일 업로드</h3>
-<p>엑셀파일은 아래의 순서로 작성되어 있어야 합니다.</p>
+1. 고용증대 세액공제를 위한 상시근로자수를 계산하는 앱입니다. <br>
+2. 제 블로그에 첨부된 사원파일 엑셀파일 양식에 맞춰 사원정보를 등록해주세요.<br>
+<a href="https://blog.naver.com/karimoon/">문쿠의 블로그 바로가기</a><br>
+3. 엑셀파일은 아래의 순서로 작성되어 있어야 합니다.<br>
+<br>
+
 <table>
     <thead>
         <tr>
@@ -50,7 +54,9 @@
         </tr>
     </tbody>
 </table>
-<br>
+
+<h3>사원 파일 업로드</h3>
+
 <form action="." method="post" enctype="multipart/form-data">
     <input type="file" name="excel_file">
     {% csrf_token %}
