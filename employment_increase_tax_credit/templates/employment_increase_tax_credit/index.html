@@ -2,63 +2,20 @@
 
 <p>조세특례제한법 제29조의 7 (법 2021.11.11 시행, 시행령 2021.11.11 시행 반영)</p>
 
-1. 고용증대 세액공제를 위한 상시근로자수를 계산하는 앱입니다. <br>
-2. 제 블로그에 첨부된 사원파일 엑셀파일 양식에 맞춰 사원정보를 등록해주세요.<br>
-<a href="https://blog.naver.com/karimoon/">문쿠의 블로그 바로가기</a><br>
-3. 엑셀파일은 아래의 순서로 작성되어 있어야 합니다.<br>
-<br>
-
-<table>
-    <thead>
-        <tr>
-            <th>구분</th>
-            <th>A</th>
-            <th>B</th>
-            <th>C</th>
-            <th>D</th>
-            <th>E</th>
-            <th>F</th>
-            <th>G</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>1</td>
-            <td>성명</td>
-            <td>생년월일</td>
-            <td>입사일자</td>
-            <td>퇴사일자</td>
-            <td>군복무<br>개월수</td>
-            <td>장애인및<br>상이자</td>
-            <td>518민주화운동부상자및<br>고엽제후유의증환자</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>봉달희</td>
-            <td>1990-03-14</td>
-            <td>2020-02-01</td>
-            <td></td>
-            <td></td>
-            <td>O</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>김짱구</td>
-            <td>1980-06-30</td>
-            <td>2019-05-01</td>
-            <td>2021-10-15</td>
-            <td>24</td>
-            <td></td>
-            <td></td>
-        </tr>
-    </tbody>
-</table>
-
-<h3>사원 파일 업로드</h3>
-
 <form action="." method="post" enctype="multipart/form-data">
-    <input type="file" name="excel_file">
     {% csrf_token %}
-    <input type="submit" value="업로드">
+    <h3>사업개시일자</h3>
+
+    만약 회사의 사업개시일자가 2017년 1월 1일 이후일 경우 사업개시일자를 수정해주세요.<br>
+    형식은 '2017-01-01'과 같이 작대기(-)로 년월일이 나누어져 있어야 합니다.<br><br>
+    사업개시일자 : {{ date_form.date }}
+
+    <h3>사원 파일 업로드</h3>
+
+    제 블로그에 첨부된 <a href="https://blog.naver.com/karimoon/">업로드 양식 파일</a>을 수정하여 사원정보를 등록해주세요.<br><br>
+
+    {{ upload_file_form.file }}
+    <input type="submit" value="계산">
 </form>
+
+파일을 첨부하고 계산버튼을 누르면 계산 결과 엑셀파일이 자동으로 다운로드됩니다.
