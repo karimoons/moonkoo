@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'common.apps.CommonConfig',
     'employment_increase_tax_credit.apps.EmploymentIncreaseTaxCreditConfig',
     'django.contrib.admin',
     'django.contrib.auth',
