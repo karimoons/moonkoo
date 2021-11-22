@@ -42,6 +42,7 @@ def calculate_employee(excel_file, business_start_date):
     df['군복무개월수'] = df['군복무개월수'].fillna(0)
     df['장애인및상이자'] = df['장애인및상이자'].fillna('X')
     df['518민주화운동부상자및고엽제후유의증환자'] = df['518민주화운동부상자및고엽제후유의증환자'].fillna('X')
+    df['월소정60시간이상근무단시간근로자'] = df['월소정60시간이상근무단시간근로자'].fillna('X')
 
     end_year = 2021
 
@@ -70,14 +71,14 @@ def calculate_employee(excel_file, business_start_date):
             year_month_string = str(year) + '-' + str(month)
 
             df.loc[(df['입사일자'] <= pd.Timestamp(date)) & ((df['퇴사일자'] >= pd.Timestamp(date)) | df['퇴사일자'].isnull()), year_month_string] = '일반'
-                # 29세 이하
+            # 29세 이하
             df.loc[(df[year_month_string] == '일반') & (df['병역차감나이'] <= 29), year_month_string] = '청년등'
-                # 장애인, 상이자
+            # 장애인, 상이자
             df.loc[(df[year_month_string] == '일반') & (df['장애인및상이자'] != 'X'), year_month_string] = '청년등'
-                # 518민주화운동부상자, 고엽제후유의증환자 (2019년 1월 1일 이후 개시하는 과세연도 분부터 적용)
+            # 518민주화운동부상자, 고엽제후유의증환자 (2019년 1월 1일 이후 개시하는 과세연도 분부터 적용)
             if year >= 2019:
                 df.loc[(df[year_month_string] == '일반') & (df['518민주화운동부상자및고엽제후유의증환자'] != 'X'), year_month_string] = '청년등'
-                # 근로계약 체결일 현재 연령이 60세 이상인 사람
+            # 근로계약 체결일 현재 연령이 60세 이상인 사람
             if year >= 2021:
                 df.loc[(df[year_month_string] == '일반') & (df['입사일나이'] >= 60), year_month_string] = '청년등'
             
@@ -87,8 +88,14 @@ def calculate_employee(excel_file, business_start_date):
         if '-' not in index:
             continue
 
-        df.loc['청년등근로자수', index] = df.loc[df[index] == '청년등', index].count()
-        df.loc['청년등외근로자수', index] = df.loc[df[index] == '일반', index].count()
+        df.loc['청년등근로자수', index] = df.loc[(df[index] == '청년등') & (df['월소정60시간이상근무단시간근로자'] == 'X'), index].count()
+        df.loc['청년등근로자수', index] = df.loc['청년등근로자수', index] + df.loc[(df[index] == '청년등') & (df['월소정60시간이상근무단시간근로자'] == '지원X'), index].count() * 0.5
+        df.loc['청년등근로자수', index] = df.loc['청년등근로자수', index] + df.loc[(df[index] == '청년등') & (df['월소정60시간이상근무단시간근로자'] == '지원O'), index].count() * 0.75
+
+        df.loc['청년등외근로자수', index] = df.loc[(df[index] == '일반') & (df['월소정60시간이상근무단시간근로자'] == 'X'), index].count()
+        df.loc['청년등외근로자수', index] = df.loc['청년등외근로자수', index] + df.loc[(df[index] == '일반') & (df['월소정60시간이상근무단시간근로자'] == '지원X'), index].count() * 0.5
+        df.loc['청년등외근로자수', index] = df.loc['청년등외근로자수', index] + df.loc[(df[index] == '일반') & (df['월소정60시간이상근무단시간근로자'] == '지원O'), index].count() * 0.75
+
         df.loc['총상시근로자수', index] = df.loc['청년등근로자수', index] + df.loc['청년등외근로자수', index]
 
         df_summary.loc['청년등근로자수합계', int(index[:4])] = df_summary.loc['청년등근로자수합계', int(index[:4])] + df.loc['청년등근로자수', index]

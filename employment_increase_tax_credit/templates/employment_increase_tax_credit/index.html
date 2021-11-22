@@ -1,21 +1,23 @@
-<h1>고용증대 세액공제를 위한 상시근로자수 계산</h1>
+{% extends "base_site.html" %}
 
-<p>조세특례제한법 제29조의 7 (법 2021.11.11 시행, 시행령 2021.11.11 시행 반영)</p>
+{% block content %}
+    <h1>고용증대 세액공제를 위한 상시근로자수 계산</h1>
 
-<form action="." method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <h3>사업개시일자</h3>
+    <p>조세특례제한법 제29조의 7 (법 2021.11.11 시행, 시행령 2021.11.11 시행 반영)</p>
 
-    만약 회사의 사업개시일자가 2017년 1월 1일 이후일 경우 사업개시일자를 수정해주세요.<br>
-    형식은 '2017-01-01'과 같이 작대기(-)로 년월일이 나누어져 있어야 합니다.<br><br>
-    사업개시일자 : {{ date_form.date }}
+    <form action="." method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3>사업개시일자</h3>
 
-    <h3>사원 파일 업로드</h3>
+        만약 회사의 사업개시일자가 2017년 1월 1일 이후일 경우 사업개시일자를 수정해주세요.<br>
+        형식은 '2017-01-01'과 같이 작대기(-)로 년월일이 나누어져 있어야 합니다.<br><br>
+        사업개시일자 : {{ date_form.date }}
 
-    제 블로그에 첨부된 <a href="https://blog.naver.com/karimoon/">업로드 양식 파일</a>을 수정하여 사원정보를 등록해주세요.<br><br>
+        <h3>사원 파일 업로드</h3>
 
-    {{ upload_file_form.file }}
-    <input type="submit" value="계산">
-</form>
-
-파일을 첨부하고 계산버튼을 누르면 계산 결과 엑셀파일이 자동으로 다운로드됩니다.
+        제 블로그에 첨부된 <a href="https://blog.naver.com/karimoon/">업로드 양식 파일</a>을 수정하여 사원정보를 등록해주세요.<br>
+        파일을 첨부하고 계산버튼을 누르면 계산 결과 엑셀파일이 자동으로 다운로드됩니다.<br><br>
+        {{ upload_file_form.file }}
+        <input type="submit" value="계산">
+    </form>
+{% endblock %}
