@@ -71,8 +71,8 @@ def calculate_employee(excel_file, business_start_date):
             year_month_string = str(year) + '-' + str(month)
 
             df.loc[(df['입사일자'] <= pd.Timestamp(date)) & ((df['퇴사일자'] >= pd.Timestamp(date)) | df['퇴사일자'].isnull()), year_month_string] = '일반'
-            # 29세 이하
-            df.loc[(df[year_month_string] == '일반') & (df['병역차감나이'] <= 29), year_month_string] = '청년등'
+            # 29세 이하. 단시간 근로자는 제외
+            df.loc[(df[year_month_string] == '일반') & (df['병역차감나이'] <= 29) & (df['월소정60시간이상근무단시간근로자'] == 'X'), year_month_string] = '청년등'
             # 장애인, 상이자
             df.loc[(df[year_month_string] == '일반') & (df['장애인및상이자'] != 'X'), year_month_string] = '청년등'
             # 518민주화운동부상자, 고엽제후유의증환자 (2019년 1월 1일 이후 개시하는 과세연도 분부터 적용)
