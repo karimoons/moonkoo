@@ -70,6 +70,7 @@ def calculate_employee(excel_file, business_start_date):
                 
             year_month_string = str(year) + '-' + str(month)
 
+            # 중도퇴사자의 경우 매월 상시근로자수 계산 시 말일 퇴사자는 해당 월의 상시근로자수에 포함, 말일 전 퇴사자는 제외. (홈택스 상담사례 '고용 증대' 2019-03-05)
             df.loc[(df['입사일자'] <= pd.Timestamp(date)) & ((df['퇴사일자'] >= pd.Timestamp(date)) | df['퇴사일자'].isnull()), year_month_string] = '일반'
             # 29세 이하. 단시간 근로자는 제외
             df.loc[(df[year_month_string] == '일반') & (df['병역차감나이'] <= 29) & (df['월소정60시간이상근무단시간근로자'] == 'X'), year_month_string] = '청년등'
