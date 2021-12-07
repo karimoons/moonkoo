@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 import datetime
+import numpy as np
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 from io import BytesIO as IO
@@ -37,7 +38,7 @@ def calculate_age(birthday, today):
     return today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
 
 def calculate_employee(excel_file, business_start_date):
-    df = pd.read_excel(excel_file)
+    df = pd.read_excel(excel_file, converters={'생년월일': np.datetime64, '입사일자': np.datetime64, '퇴사일자': np.datetime64})
         
     df['군복무개월수'] = df['군복무개월수'].fillna(0)
     df['장애인및상이자'] = df['장애인및상이자'].fillna('X')
