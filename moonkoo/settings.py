@@ -33,14 +33,16 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'common.apps.CommonConfig',
-    'employment_increase_tax_credit.apps.EmploymentIncreaseTaxCreditConfig',
+    'account.apps.AccountConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'common.apps.CommonConfig',
+    'employment_increase_tax_credit.apps.EmploymentIncreaseTaxCreditConfig',
+    'housekeeping_book.apps.HousekeepingBookConfig',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +133,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/'

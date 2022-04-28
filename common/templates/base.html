@@ -29,7 +29,7 @@
         {% block branding %}{% endblock %}
         </div>
         {% block usertools %}
-        <!-- {% if user.is_active %}
+        {% if user.is_active %}
         <div id="user-tools">
             {% block welcome-msg %}
                 {% trans 'Welcome,' %}
@@ -46,12 +46,12 @@
                     {% endif %}
                 {% endif %}
                 {% if user.has_usable_password %}
-                <a href="">{% trans 'Change password' %}</a> /
+                <a href="{% url 'password_change' %}">{% trans 'Change password' %}</a> /
                 {% endif %}
-                <a href="">{% trans 'Log out' %}</a>
+                <a href="{% url 'logout' %}">{% trans 'Log out' %}</a>
             {% endblock %}
         </div>
-        {% endif %} -->
+        {% endif %}
         {% endblock %}
         {% block nav-global %}{% endblock %}
     </div>
