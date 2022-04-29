@@ -1,5 +1,15 @@
 {% extends "base_site.html" %}
 
 {% block content %}
-    <h1>Hello world!</h1>
+    <h1>우리 가족 가계부</h1>
+
+    <p>가계부를 적을 가족을 선택해주세요.</p>
+
+    <form action="." method="post">
+        {{ form }}
+        {% csrf_token %}
+        <input type="submit" value="선택">
+    </form>
+
+    <p><a href="{% url 'housekeeping_book:create_family' %}">가족 가계부 새로 만들기</a></p>
 {% endblock %}

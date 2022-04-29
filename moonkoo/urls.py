@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
     path('employment-increase-tax-credit/', include('employment_increase_tax_credit.urls')),
-    path('housekeeping_book', include('housekeeping_book.urls')),
+    path('housekeeping-book/', include('housekeeping_book.urls')),
 ]
