@@ -1,5 +1,8 @@
+import datetime
+
 from django import forms
-from .models import Family
+from django.db.models import Q
+from .models import Family, Account, Tag
 
 class ChoiceFamilyForm(forms.Form):
     choice_family = forms.ModelChoiceField(queryset=Family.objects.none())
@@ -7,10 +10,28 @@ class ChoiceFamilyForm(forms.Form):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-        qs = Family.objects.filter(member=user)
-        self.fields['choice_family'].queryset = qs
+        self.fields['choice_family'].queryset = Family.objects.filter(member=user)
 
 class CreateFamilyForm(forms.ModelForm):
     class Meta:
         model = Family
         fields = ['name', ]
+
+class CreateTransactionForm(forms.Form):
+    date = forms.DateField(initial=datetime.date.today, widget=forms.DateInput(attrs={'type':'date'}))
+    memo = forms.CharField(max_length=50)
+    main_account = forms.ModelChoiceField(queryset=Account.objects.none())
+    main_tag = forms.ModelChoiceField(queryset=Tag.objects.none())
+    amount = forms.DecimalField(max_digits=15, decimal_places=2)
+    sub_account = forms.ModelChoiceField(queryset=Account.objects.none())
+    sub_tag = forms.ModelChoiceField(queryset=Tag.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        current_family_id = kwargs.pop('current_family_id')
+
+        super().__init__(*args, **kwargs)
+
+        self.fields['main_account'].queryset = Account.objects.filter(Q(family__id=current_family_id)&(Q(account='A')|Q(account='L'))).order_by('code')
+        self.fields['main_tag'].queryset = Tag.objects.filter(family__id=current_family_id).order_by('name')
+        self.fields['sub_account'].queryset = Account.objects.filter(family__id=current_family_id).order_by('code')
+        self.fields['sub_tag'].queryset = Tag.objects.filter(family__id=current_family_id).order_by('name')

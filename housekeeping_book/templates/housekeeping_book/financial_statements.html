@@ -1,0 +1,72 @@
+{% extends "hb_base_site.html" %}
+
+{% block content %}
+    <h1>재무상태표</h1>
+
+    <table>
+        <tr>
+            <th>계정과목</th>
+            <th>금액</th>
+        </tr>
+        {% for index, item in asset.iterrows %}
+            <tr>
+                <td>{{ index.1 }}</td>
+                <td>{{ item.amount }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>자산총계</th>
+            <th>{{ total_asset }}</th>
+        </tr>
+        {% for index, item in liability.iterrows %}
+            <tr>
+                <td>{{ index.1 }}</td>
+                <td>{{ item.amount }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>부채총계</th>
+            <th>{{ total_liability }}</th>
+        </tr>
+        <tr>
+            <th>순자산</th>
+            <th>{{ net_asset }}</th>
+        </tr>
+    </table>
+
+    <br>
+    
+    <h1>손익계산서</h1>
+
+    <table>
+        <tr>
+            <th>계정과목</th>
+            <th>금액</th>
+        </tr>
+        {% for index, item in income.iterrows %}
+            <tr>
+                <td>{{ index.1 }}</td>
+                <td>{{ item.amount }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>수익합계</th>
+            <th>{{ total_income }}</th>
+        </tr>
+        {% for index, item in expense.iterrows %}
+            <tr>
+                <td>{{ index.1 }}</td>
+                <td>{{ item.amount }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>비용합계</th>
+            <th>{{ total_expense }}</th>
+        </tr>
+        <tr>
+            <th>순손익</th>
+            <th>{{ net_income }}</th>
+        </tr>
+    </table>
+
+{% endblock %}
