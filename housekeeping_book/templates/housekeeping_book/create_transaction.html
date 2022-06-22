@@ -18,10 +18,12 @@
                 <th rowspan="3">주계정</th>
                 <th>계정과목</th>
                 <td>{{ form.main_account }}</td>
+                <td><a href="{% url 'housekeeping_book:account_list' %}"><input type="button" value="편집"></a></td>
             </tr>
             <tr>
                 <th>꼬리표</th>
                 <td>{{ form.main_tag }}</td>
+                <td><a href="{% url 'housekeeping_book:tag_list' %}"><input type="button" value="편집"></a></td>
             </tr>
             <tr>
                 <th>금액</th>

@@ -1,0 +1,19 @@
+{% extends "hb_base_site.html" %}
+
+{% block content %}
+    <h1>꼬리표 목록</h1>
+
+    <p><a href="{% url 'housekeeping_book:create_tag' %}"><input type="button" value="신규"></a></p>
+    <br>
+
+    <table>
+        <tr>
+            <th>꼬리표이름</th>
+        </tr>
+        {% for tag in object_list %}
+            <tr>
+                <td><a href="{% url 'housekeeping_book:update_tag' tag.id %}">{{ tag.name }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -24,6 +24,18 @@ class Account(models.Model):
 
     def __str__(self):
         return self.title
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields = ['family', 'code'],
+                name = 'one code per one family',
+            ),
+            models.UniqueConstraint(
+                fields = ['family', 'title'],
+                name = 'one title per one family',
+            )
+        ]
 
 class Slit(models.Model):
     family = models.ForeignKey(Family, on_delete=models.CASCADE, verbose_name='가족')
@@ -39,12 +51,20 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields = ['family', 'name'],
+                name = 'one name per one family',
+            )
+        ]
 
 class Ledger(models.Model):
     slit = models.ForeignKey(Slit, on_delete=models.CASCADE, verbose_name='전표')
     account = models.ForeignKey(Account, on_delete=models.PROTECT, verbose_name='계정과목')
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT, verbose_name='꼬리표')
-    amount = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='금액')
+    amount = models.DecimalField(max_digits=13, decimal_places=0, verbose_name='금액')
 
     def __str__(self):
         return '{}/{}/{}/{}'.format(self.slit, self.account, self.tag, self.amount)

@@ -4,6 +4,9 @@
     <h1>{{ current_family.name }} 가계부</h1>
     <h2><a href="{% url 'housekeeping_book:invite_family' %}">가족 초대하기</a></h2>
     <br>
+    <h2><a href="{% url 'housekeeping_book:account_list' %}">계정과목 목록</a></h2>
+    <h2><a href="{% url 'housekeeping_book:tag_list' %}">꼬리표 목록</a></h2>
+    <br>
     <h2><a href="{% url 'housekeeping_book:create_transaction' %}">거래 입력하기</a></h2>
     <h2><a href="{% url 'housekeeping_book:financial_statements' %}">재무제표 보기</a></h2>
 {% endblock %}
