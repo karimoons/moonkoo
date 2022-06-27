@@ -17,9 +17,17 @@ def transaction_list(request, code):
     if 'end_date' in request.GET:
         form = SearchForm(request.GET)
         if form.is_valid():
-            if form.cleaned_data['end_date']:
+            if form.cleaned_data['start_date']:
+                start_date = form.cleaned_data['start_date']
+            else:
                 start_date = form.cleaned_data['end_date'] - datetime.timedelta(days=7)
-                ledgers = ledgers.filter(slit__date__gte=start_date, slit__date__lte=form.cleaned_data['end_date'])
+
+            if form.cleaned_data['end_date']:
+                end_date = form.cleaned_data['end_date']
+            else:
+                end_date = datetime.date.today()
+
+            ledgers = ledgers.filter(slit__date__gte=start_date, slit__date__lte=end_date)
     else:
         form = SearchForm()
 

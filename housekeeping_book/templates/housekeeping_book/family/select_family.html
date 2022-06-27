@@ -6,10 +6,12 @@
     <p>가계부를 적을 가족을 선택해주세요.</p>
 
     <form action="." method="post">
-        {{ form }}
+        {{ form.choice_family }}
         {% csrf_token %}
         <input type="submit" value="선택">
     </form>
+
+    <br>
 
     <p><a href="{% url 'housekeeping_book:create_family' %}">가족 가계부 새로 만들기</a></p>
 {% endblock %}

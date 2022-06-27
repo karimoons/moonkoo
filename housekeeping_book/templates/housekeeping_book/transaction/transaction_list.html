@@ -35,9 +35,9 @@
         {% for ledger in ledgers %}
             <tr>
                 <td>{{ ledger.slit.date }}</td>
-                <td>{{ ledger.slit.memo }}</td>
+                <td><a href="{% url 'housekeeping_book:update_transaction' ledger.slit.id %}?next={{ request.path }}">{{ ledger.slit.memo }}</a></td>
                 <td>{{ ledger.tag }}</td>
-                <td class="align-right{% if ledger.amount >= 0 %}{% else %} negative-number{% endif %}"><a href="{% url 'housekeeping_book:update_transaction' ledger.slit.id %}?next={{ request.path }}">{{ ledger.amount|intcomma }}</a></td>
+                <td class="align-right{% if ledger.amount >= 0 %}{% else %} negative-number{% endif %}">{{ ledger.amount|intcomma }}</td>
                 <td>{{ ledger.opposite_account }}({{ ledger.opposite_tag }})</td>
             </tr>
         {% endfor %}
