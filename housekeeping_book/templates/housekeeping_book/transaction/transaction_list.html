@@ -5,6 +5,8 @@
 {% block content %}
     <h1>거래내역</h1>
 
+    <a href="{% url 'housekeeping_book:create_transaction' %}?next={{ request.path }}"><input type="button" value="신규"></a>
+
     <table>
         <tr>
             <th>코드</th>

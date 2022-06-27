@@ -17,19 +17,22 @@ def transaction_list(request, code):
     if 'end_date' in request.GET:
         form = SearchForm(request.GET)
         if form.is_valid():
-            if form.cleaned_data['start_date']:
-                start_date = form.cleaned_data['start_date']
-            else:
-                start_date = form.cleaned_data['end_date'] - datetime.timedelta(days=7)
-
-            if form.cleaned_data['end_date']:
+            if form.cleaned_data['end_date'] and form.cleaned_data['end_date'] != '':
                 end_date = form.cleaned_data['end_date']
             else:
                 end_date = datetime.date.today()
 
-            ledgers = ledgers.filter(slit__date__gte=start_date, slit__date__lte=end_date)
+            if form.cleaned_data['start_date']:
+                start_date = form.cleaned_data['start_date']
+            else:
+                start_date = end_date - datetime.timedelta(days=30)
+
     else:
-        form = SearchForm()
+        end_date = datetime.date.today()
+        start_date = end_date - datetime.timedelta(days=30)
+        form = SearchForm(initial={'start_date': start_date, 'end_date': end_date})
+    
+    ledgers = ledgers.filter(slit__date__gte=start_date, slit__date__lte=end_date)
 
     return render(request, 'housekeeping_book/transaction/transaction_list.html', {'main_account': main_account, 'ledgers': ledgers, 'form': form})
 
@@ -65,6 +68,8 @@ def create_transaction(request):
 
             main_ledger.save()
             sub_ledger.save()
+
+            return redirect(request.POST.get('next'))
 
     form = TransactionForm(current_family_id=request.session['current_family_id'])
 
