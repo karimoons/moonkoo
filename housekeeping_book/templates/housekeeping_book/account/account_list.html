@@ -1,0 +1,29 @@
+{% extends "hb_base_site.html" %}
+
+{% block content %}
+    <h1>계정과목 목록</h1>
+
+    <table>
+        <tr>
+            <th>코드</th>
+            <th>계정</th>
+            <th>과목</th>
+        </tr>
+        {% for account in account_list %}
+            <tr>
+                <td>{{ account.code }}</td>
+                <td>{{ account.get_account_display }}</td>
+                <td><a href="{% url 'housekeeping_book:update_account' account.id %}">{{ account.title }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <form action="." method="post">
+                {% csrf_token %}
+                <td>{{ form.code }}</td>
+                <td>{{ form.account }}</td>
+                <td>{{ form.title }}</td>
+                <td><input type="submit" value="저장"></td>
+            </form>
+        </tr>
+    </table>
+{% endblock %}

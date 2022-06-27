@@ -1,0 +1,8 @@
+{% extends "hb_base_site.html" %}
+
+{% block content %}
+    <h1>가족 초대하기</h1>
+
+    <p>아래 링크를 복사하여 초대할 가족에게 보내주세요.</p>
+    <p>http://{{ request.get_host }}{% url 'housekeeping_book:accept_invitation' %}?fid={{ fid }}&uid={{ uid }}</p>
+{% endblock %}

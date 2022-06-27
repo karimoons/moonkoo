@@ -1,0 +1,25 @@
+{% extends "hb_base_site.html" %}
+
+{% block content %}
+    <h1>계정과목 편집</h1>
+
+    <form action="." method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>코드</th>
+                <td>{{ form.code }}</td>
+            </tr>
+            <tr>
+                <th>계정</th>
+                <td>{{ form.account }}</td>
+            </tr>
+            <tr>
+                <th>과목</th>
+                <td>{{ form.title }}</td>
+            </tr>
+        </table>
+        <input type="submit" value="저장">
+        <a href="{% url 'housekeeping_book:delete_account' pk %}"><input type="button" value="삭제"></a>
+    </form>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "hb_base_site.html" %}
+
+{% block content %}
+    <h1>거래 입력</h1>
+
+    <form action="." method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th colspan="2">날짜</th>
+                <td>{{ form.date }}</td>
+            </tr>
+            <tr>
+                <th colspan="2">거래내용</th>
+                <td>{{ form.memo }}</td>
+            </tr>
+            <tr>
+                <th rowspan="3">주계정</th>
+                <th>계정과목</th>
+                <td>{{ form.main_account }}</td>
+                <td><a href="{% url 'housekeeping_book:account_list' %}"><input type="button" value="편집"></a></td>
+            </tr>
+            <tr>
+                <th>꼬리표</th>
+                <td>{{ form.main_tag }}</td>
+                <td><a href="{% url 'housekeeping_book:tag_list' %}"><input type="button" value="편집"></a></td>
+            </tr>
+            <tr>
+                <th>금액</th>
+                <td>{{ form.amount }}</td>
+            </tr>
+            <tr>
+                <th rowspan="2">상대계정</th>
+                <th>계정과목</th>
+                <td>{{ form.sub_account }}</td>
+            </tr>
+            <tr>
+                <th>꼬리표</th>
+                <td>{{ form.sub_tag }}</td>
+            </tr>
+        </table>
+
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        <input type="submit" value="저장">
+        {% if pk %}
+            <a href="{% url 'housekeeping_book:delete_transaction' pk %}"><input type="button" value="삭제"></a>
+        {% endif %}
+        
+    </form>
+{% endblock %}

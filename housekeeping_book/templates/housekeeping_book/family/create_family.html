@@ -1,0 +1,12 @@
+{% extends "base_site.html" %}
+
+{% block content %}
+    <h1>가족 가계부 새로 만들기</h1>
+
+    <form action="." method="post">
+        {{ form }}
+        {% csrf_token %}
+        <input type="submit" value="새로 만들기">
+    </form>
+
+{% endblock %}

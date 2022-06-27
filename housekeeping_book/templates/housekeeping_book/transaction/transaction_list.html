@@ -1,0 +1,45 @@
+{% extends "hb_base_site.html" %}
+
+{% load humanize %}
+
+{% block content %}
+    <h1>거래내역</h1>
+
+    <table>
+        <tr>
+            <th>코드</th>
+            <td>{{ main_account.code }}</td>
+            <th>계정</th>
+            <td>{{ main_account.get_account_display }}</td>
+            <th>과목</th>
+            <td>{{ main_account.title }}</td>
+        </tr>
+    </table>
+    
+    <div>
+        <form action="." method="get">
+            <span>날짜 : {{ form.start_date }}</span>
+            <span> ~ {{ form.end_date }}</span>
+            <input type="submit" value="찾기">
+        </form>
+    </div>
+
+    <table>
+        <tr>
+            <th>날짜</th>
+            <th>내용</th>
+            <th>꼬리표</th>
+            <th>금액</th>
+            <th>상대계정과목(꼬리표)</th>
+        </tr>
+        {% for ledger in ledgers %}
+            <tr>
+                <td>{{ ledger.slit.date }}</td>
+                <td>{{ ledger.slit.memo }}</td>
+                <td>{{ ledger.tag }}</td>
+                <td class="align-right{% if ledger.amount >= 0 %}{% else %} negative-number{% endif %}"><a href="{% url 'housekeeping_book:update_transaction' ledger.slit.id %}?next={{ request.path }}">{{ ledger.amount|intcomma }}</a></td>
+                <td>{{ ledger.opposite_account }}({{ ledger.opposite_tag }})</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

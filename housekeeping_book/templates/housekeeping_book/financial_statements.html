@@ -1,0 +1,90 @@
+{% extends "hb_base_site.html" %}
+
+{% load static humanize %}
+
+{% block extrastyle %}<link rel="stylesheet" href="{% static 'css/financial_statements.css' %}">{% endblock %}
+
+{% block content %}
+    <form action="." method="post">
+        {% csrf_token %}
+        <p>
+            {{ form.unit }}
+            기준일자:
+            {{ form.date }}
+            <input type="submit" value="조회">
+        </p>
+    </form>
+
+    <br>
+
+    <h1>재무상태표</h1>
+    <h3>{{ end_date }} 현재</h2>
+
+    <table>
+        <tr>
+            <th>계정과목</th>
+            <th>금액</th>
+        </tr>
+        {% for index, item in asset.iterrows %}
+            <tr>
+                <td>{{ index.1 }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' index.0 %}?end_date={{ end_date|date:'Y-m-d' }}">{{ item.amount|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>자산총계</th>
+            <th class="align-right">{{ total_asset|intcomma }}</th>
+        </tr>
+        {% for index, item in liability.iterrows %}
+            <tr>
+                <td>{{ index.1 }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' index.0 %}?end_date={{ end_date|date:'Y-m-d' }}">{{ item.amount|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>부채총계</th>
+            <th class="align-right">{{ total_liability|intcomma }}</th>
+        </tr>
+        <tr>
+            <th>순자산</th>
+            <th class="align-right{% if net_asset >= 0 %}{% else %} negative-number{% endif %}">{{ net_asset|intcomma }}</th>
+        </tr>
+    </table>
+
+    <br>
+    
+    <h1>손익계산서</h1>
+    <h3>{{ start_date }}부터 {{ end_date }}까지</h3>
+
+    <table>
+        <tr>
+            <th>계정과목</th>
+            <th>금액</th>
+        </tr>
+        {% for index, item in income.iterrows %}
+            <tr>
+                <td>{{ index.1 }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' index.0 %}?end_date={{ end_date|date:'Y-m-d' }}">{{ item.amount|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>수익합계</th>
+            <th class="align-right">{{ total_income|intcomma }}</th>
+        </tr>
+        {% for index, item in expense.iterrows %}
+            <tr>
+                <td>{{ index.1 }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' index.0 %}?end_date={{ end_date|date:'Y-m-d' }}">{{ item.amount|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>비용합계</th>
+            <th class="align-right">{{ total_expense|intcomma }}</th>
+        </tr>
+        <tr>
+            <th>순손익</th>
+            <th class="align-right{% if net_income >= 0 %}{% else %} negative-number{% endif %}">{{ net_income|intcomma }}</th>
+        </tr>
+    </table>
+
+{% endblock %}
