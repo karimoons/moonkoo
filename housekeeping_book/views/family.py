@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-from ..forms import ChoiceFamilyForm, CreateFamilyForm
+from ..forms.family import ChoiceFamilyForm, CreateFamilyForm
 
 from ..models import Family, Account, Tag
 

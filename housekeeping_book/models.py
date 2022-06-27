@@ -65,6 +65,8 @@ class Ledger(models.Model):
     account = models.ForeignKey(Account, on_delete=models.PROTECT, verbose_name='계정과목')
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT, verbose_name='꼬리표')
     amount = models.DecimalField(max_digits=13, decimal_places=0, verbose_name='금액')
+    opposite_account = models.ForeignKey(Account, on_delete=models.PROTECT, verbose_name='상대계정과목', related_name='opposite_ledger')
+    opposite_tag = models.ForeignKey(Tag, on_delete=models.PROTECT, verbose_name='상대계정꼬리표', related_name='opposite_ledger')
 
     def __str__(self):
         return '{}/{}/{}/{}'.format(self.slit, self.account, self.tag, self.amount)

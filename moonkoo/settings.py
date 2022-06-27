@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'common.apps.CommonConfig',
     'employment_increase_tax_credit.apps.EmploymentIncreaseTaxCreditConfig',
     'housekeeping_book.apps.HousekeepingBookConfig',

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 
-from ..forms import TagForm
+from ..forms.tag import TagForm
 
 from ..models import Family, Tag
 

@@ -3,6 +3,7 @@ from django.urls import path
 from .views import family
 from .views import account
 from .views import tag
+from .views import transaction
 
 from .views import views
 
@@ -27,6 +28,10 @@ urlpatterns = [
     path('tag/update/<int:pk>/', tag.update_tag, name='update_tag'),
     path('tag/delete/<int:pk>/', tag.delete_tag, name='delete_tag'),
 
-    path('create-transaction/', views.create_transaction, name='create_transaction'),
+    path('transaction/list/<int:code>/', transaction.transaction_list, name='transaction_list'),
+    path('transaction/create/', transaction.create_transaction, name='create_transaction'),
+    path('transaction/update/<int:pk>/', transaction.update_transaction, name='update_transaction'),
+    path('transaction/delete/<int:pk>/', transaction.delete_transaction, name='delete_transaction'),
+
     path('financial-statements/', views.financial_statements, name='financial_statements'),
 ]

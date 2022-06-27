@@ -40,6 +40,11 @@
             </tr>
         </table>
 
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
         <input type="submit" value="저장">
+        {% if pk %}
+            <a href="{% url 'housekeeping_book:delete_transaction' pk %}"><input type="button" value="삭제"></a>
+        {% endif %}
+        
     </form>
 {% endblock %}

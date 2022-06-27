@@ -1,0 +1,29 @@
+{% extends "hb_base_site.html" %}
+
+{% block content %}
+    <h1>거래 삭제</h1>
+
+    <form action="." method="post">
+        {% csrf_token %}
+        <p>아래 거래를 삭제하시겠습니까?</p>
+
+        <table>
+            <tr>
+                <th>날짜</th>
+                <th>메모</th>
+                <th>주계정과목</th>
+                <th>꼬리표</th>
+                <th>금액</th>
+            </tr>
+            <tr>
+                <td>{{ slit.date }}</td>
+                <td>{{ slit.memo }}</td>
+                <td>{{ slit.ledger_set.all.0.account }}</td>
+                <td>{{ slit.ledger_set.all.0.tag }}</td>
+                <td>{{ slit.ledger_set.all.0.amount }}</td>
+            </tr>
+        </table>
+
+        <input type="submit" value="삭제">
+    </form>    
+{% endblock %}
