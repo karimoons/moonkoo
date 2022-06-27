@@ -112,9 +112,6 @@ def update_transaction(request, pk):
             main_ledger.save()
             sub_ledger.save()
 
-            print(request.POST.get('next'))
-            print(request.POST.get('next', '/'))
-
             return redirect(request.POST.get('next'))
 
     else:
