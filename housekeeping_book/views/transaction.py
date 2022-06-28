@@ -19,6 +19,11 @@ def transaction_list(request, code):
             end_date = datetime.datetime.strptime(request.GET.get('end_date'), '%Y-%m-%d').date()
         except:
             end_date = datetime.date.today()
+    elif request.session.get('last_input_date') is not None:
+        try:
+            end_date = datetime.datetime.strptime(request.session.get('last_input_date'), '%Y-%m-%d').date()
+        except:
+            end_date = datetime.date.today()
     else:
         end_date = datetime.date.today()
     
@@ -69,7 +74,9 @@ def create_transaction(request):
             main_ledger.save()
             sub_ledger.save()
 
-            return redirect(request.POST.get('next'))
+            request.session['last_input_date'] = str(slit.date)
+
+            return redirect(reverse('housekeeping_book:transaction_list', kwargs={'code': main_ledger.account.code}))
 
     form = TransactionForm(current_family_id=request.session['current_family_id'])
 
