@@ -43,7 +43,7 @@ class TransactionForm(forms.Form):
         if main_tag != '':
             self.fields['main_tag'].initial = main_tag
         else:
-            self.fields['main_tag'].initial = self.fields['main_tag'].queryset.first()
+            self.fields['main_tag'].initial = self.fields['main_tag'].queryset.order_by('id').first()
 
         if amount != '':
             self.fields['amount'].initial = amount
@@ -54,7 +54,7 @@ class TransactionForm(forms.Form):
         if sub_tag != '':
             self.fields['sub_tag'].initial = sub_tag
         else:
-            self.fields['sub_tag'].initial = self.fields['sub_tag'].queryset.first()
+            self.fields['sub_tag'].initial = self.fields['sub_tag'].queryset.order_by('id').first()
 
 class SearchForm(forms.Form):
     start_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type':'date'}))
