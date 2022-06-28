@@ -15,23 +15,23 @@ def transaction_list(request, code):
     ledgers = Ledger.objects.filter(slit__family=family).filter(account=main_account).order_by('slit__date')
 
     if 'end_date' in request.GET:
-        form = SearchForm(request.GET)
-        if form.is_valid():
-            if form.cleaned_data['end_date'] and form.cleaned_data['end_date'] != '':
-                end_date = form.cleaned_data['end_date']
-            else:
-                end_date = datetime.date.today()
-
-            if form.cleaned_data['start_date']:
-                start_date = form.cleaned_data['start_date']
-            else:
-                start_date = end_date - datetime.timedelta(days=30)
-
+        try:
+            end_date = datetime.datetime.strptime(request.GET.get('end_date'), '%Y-%m-%d').date()
+        except:
+            end_date = datetime.date.today()
     else:
         end_date = datetime.date.today()
-        start_date = end_date - datetime.timedelta(days=30)
-        form = SearchForm(initial={'start_date': start_date, 'end_date': end_date})
     
+    if 'start_date' in request.GET:
+        try:
+            start_date = datetime.datetime.strptime(request.GET.get('start_date'), '%Y-%m-%d').date()
+        except:
+            start_date = end_date - datetime.timedelta(days=30)
+    else:
+        start_date = end_date - datetime.timedelta(days=30)
+    
+    form = SearchForm(initial={'start_date': start_date, 'end_date': end_date})
+   
     ledgers = ledgers.filter(slit__date__gte=start_date, slit__date__lte=end_date)
 
     return render(request, 'housekeeping_book/transaction/transaction_list.html', {'main_account': main_account, 'ledgers': ledgers, 'form': form})
