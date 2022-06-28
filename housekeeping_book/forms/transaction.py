@@ -59,3 +59,5 @@ class TransactionForm(forms.Form):
 class SearchForm(forms.Form):
     start_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type':'date'}))
     end_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'type':'date'}))
+    memo = forms.CharField(max_length=20, required=False)
+    tag = forms.CharField(max_length=20, required=False)

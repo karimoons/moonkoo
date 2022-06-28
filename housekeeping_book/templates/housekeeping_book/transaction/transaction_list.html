@@ -2,6 +2,14 @@
 
 {% load humanize %}
 
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'housekeeping_book:dashboard' %}">가계부홈</a>
+        >
+        <a href="{% url 'housekeeping_book:financial_statements' %}">재무제표 보기</a>
+    </div>
+{% endblock %}
+
 {% block content %}
     <h1>거래내역</h1>
 
@@ -22,6 +30,8 @@
         <form action="." method="get">
             <span>날짜 : {{ form.start_date }}</span>
             <span> ~ {{ form.end_date }}</span>
+            <span>내용 : {{ form.memo }}</span>
+            <span>꼬리표 : {{ form.tag }} </span>
             <input type="submit" value="찾기">
         </form>
     </div>

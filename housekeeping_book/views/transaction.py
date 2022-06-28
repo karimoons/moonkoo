@@ -1,4 +1,5 @@
 import datetime
+from urllib.parse import urlencode
 
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -14,30 +15,18 @@ def transaction_list(request, code):
     main_account = Account.objects.filter(family=family).get(code=code)
     ledgers = Ledger.objects.filter(slit__family=family).filter(account=main_account).order_by('slit__date')
 
-    if 'end_date' in request.GET:
-        try:
-            end_date = datetime.datetime.strptime(request.GET.get('end_date'), '%Y-%m-%d').date()
-        except:
-            end_date = datetime.date.today()
-    elif request.session.get('last_input_date') is not None:
-        try:
-            end_date = datetime.datetime.strptime(request.session.get('last_input_date'), '%Y-%m-%d').date()
-        except:
-            end_date = datetime.date.today()
-    else:
-        end_date = datetime.date.today()
-    
-    if 'start_date' in request.GET:
-        try:
-            start_date = datetime.datetime.strptime(request.GET.get('start_date'), '%Y-%m-%d').date()
-        except:
-            start_date = end_date - datetime.timedelta(days=30)
-    else:
-        start_date = end_date - datetime.timedelta(days=30)
-    
-    form = SearchForm(initial={'start_date': start_date, 'end_date': end_date})
-   
-    ledgers = ledgers.filter(slit__date__gte=start_date, slit__date__lte=end_date)
+    form = SearchForm(request.GET)
+    if form.is_valid():
+        cd = form.cleaned_data
+
+        if cd['start_date']:
+            ledgers = ledgers.filter(slit__date__gte=str(cd['start_date']))
+        if cd['end_date']:
+            ledgers = ledgers.filter(slit__date__lte=str(cd['end_date']))
+        if cd['memo']:
+            ledgers = ledgers.filter(slit__memo__contains=cd['memo'])
+        if cd['tag']:
+            ledgers = ledgers.filter(tag__name__contains=cd['tag'])
 
     return render(request, 'housekeeping_book/transaction/transaction_list.html', {'main_account': main_account, 'ledgers': ledgers, 'form': form})
 
@@ -74,9 +63,14 @@ def create_transaction(request):
             main_ledger.save()
             sub_ledger.save()
 
-            request.session['last_input_date'] = str(slit.date)
+            end_date = slit.date
+            start_date = end_date - datetime.timedelta(days=30)
 
-            return redirect(reverse('housekeeping_book:transaction_list', kwargs={'code': main_ledger.account.code}))
+            base_url = reverse('housekeeping_book:transaction_list', args=(main_ledger.account.code, ))
+            query_string = urlencode({'start_date': start_date, 'end_date': end_date})
+            url = '{}?{}'.format(base_url, query_string)
+
+            return redirect(url)
 
     form = TransactionForm(current_family_id=request.session['current_family_id'])
 
