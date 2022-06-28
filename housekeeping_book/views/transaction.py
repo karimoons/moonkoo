@@ -42,7 +42,7 @@ def create_transaction(request):
             sub_account = Account.objects.get(family=family, title=form.cleaned_data['sub_account'])
             sub_tag = Tag.objects.get(family=family, name=form.cleaned_data['sub_tag'])
 
-            slit = Slit(family=family, date=form.cleaned_data['date'], memo=form.cleaned_data['memo'])
+            slit = Slit(family=family, date=form.cleaned_data['date'], memo=form.cleaned_data['memo'], modified_user=request.user)
             slit.save()
 
             main_ledger = Ledger(slit=slit, account=main_account, tag=main_tag, amount=amount, opposite_account=sub_account, opposite_tag=sub_tag)
@@ -90,6 +90,7 @@ def update_transaction(request, pk):
         if form.is_valid():
             slit.date = form.cleaned_data['date']
             slit.memo = form.cleaned_data['memo']
+            slit.modified_user = request.user
 
             main_ledger.account = form.cleaned_data['main_account']
             main_ledger.tag = form.cleaned_data['main_tag']
@@ -118,12 +119,19 @@ def update_transaction(request, pk):
             main_ledger.save()
             sub_ledger.save()
 
-            return redirect(request.POST.get('next'))
+            end_date = slit.date
+            start_date = end_date - datetime.timedelta(days=30)
+
+            base_url = reverse('housekeeping_book:transaction_list', args=(main_ledger.account.code, ))
+            query_string = urlencode({'start_date': start_date, 'end_date': end_date})
+            url = '{}?{}'.format(base_url, query_string)
+
+            return redirect(url)
 
     else:
         form = TransactionForm(current_family_id=request.session['current_family_id'], date=slit.date, memo=slit.memo, main_account=main_ledger.account, main_tag=main_ledger.tag, amount=main_ledger.amount, sub_account=main_ledger.opposite_account, sub_tag=main_ledger.opposite_tag)
 
-    return render(request, 'housekeeping_book/transaction/update_transaction.html', {'form': form, 'pk': pk})
+    return render(request, 'housekeeping_book/transaction/update_transaction.html', {'form': form, 'pk': pk, 'slit': slit})
 
 @login_required
 def delete_transaction(request, pk):

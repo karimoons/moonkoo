@@ -38,6 +38,14 @@
                 <th>꼬리표</th>
                 <td>{{ form.sub_tag }}</td>
             </tr>
+            <tr>
+                <td colspan="2">최종수정일시</td>
+                <td>{{ slit.modified_date }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">최종수정자</td>
+                <td>{{ slit.modified_user }}</td>
+            </tr>
         </table>
 
         <input type="hidden" name="next" value="{{ request.GET.next }}">

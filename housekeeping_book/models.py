@@ -42,6 +42,9 @@ class Slit(models.Model):
     date = models.DateField(verbose_name='날짜')
     memo = models.CharField(max_length=50, verbose_name='적요')
 
+    modified_date = models.DateTimeField(auto_now=True, editable=False, null=True, verbose_name='최종수정일시')
+    modified_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='최종수정자')
+
     def __str__(self):
         return '{}/{}/{}'.format(self.family, self.date, self.memo)
 
