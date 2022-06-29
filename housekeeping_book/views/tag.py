@@ -13,7 +13,7 @@ class TagListView(LoginRequiredMixin, ListView):
     template_name = 'housekeeping_book/tag/tag_list.html'
     
     def get_queryset(self):
-        return Tag.objects.filter(family=self.request.session['current_family_id'])
+        return Tag.objects.filter(family=self.request.session['current_family_id']).order_by('name')
 
 @login_required
 def create_tag(request):
@@ -22,6 +22,7 @@ def create_tag(request):
         if form.is_valid():
             new_tag = form.save(commit=False)
             new_tag.family = Family.objects.get(id=request.session['current_family_id'])
+            new_tag.modified_user = request.user
             try:
                 new_tag.save()
 
@@ -41,6 +42,7 @@ def update_tag(request, pk):
             tag = form.save(commit=False)
             tag.id = pk
             tag.family = Family.objects.get(id=request.session['current_family_id'])
+            tag.modified_user = request.user
             try:
                 tag.save()
 
@@ -48,9 +50,10 @@ def update_tag(request, pk):
             except:
                 messages.error(request, '꼬리표 이름은 중복될 수 없습니다.')
     else:
-        form = TagForm(instance=Tag.objects.get(id=pk))
+        tag = Tag.objects.get(id=pk)
+        form = TagForm(instance=tag)
 
-    return render(request, 'housekeeping_book/tag/update_tag.html', {'form': form, 'pk': pk})
+    return render(request, 'housekeeping_book/tag/update_tag.html', {'form': form, 'pk': pk, 'tag': tag})
 
 @login_required
 def delete_tag(request, pk):
