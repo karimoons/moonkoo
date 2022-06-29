@@ -5,10 +5,13 @@
 {% endblock %}
 
 {% block content %}
+    <h2>소통 창구</h2>
     <h1><a href="https://blog.naver.com/karimoon/">문쿠의 블로그</a></h1>
     <br>
+    <h2>재무 도움 도구</h2>
+    <h1><a href="{% url 'housekeeping_book:select_family' %}">우리 가족 가계부</a></h1>
+    <br>
+    <h2>세무 도움 도구</h2>
     <h1><a href="{% url 'employment_increase_tax_credit:index' %}">고용증대 세액공제 상시근로자수 계산</a></h1>
     <h1><a href="{% url 'employment_increase_tax_credit:social_insurance' %}">중소기업 사회보험료 세액공제 상시근로자수 계산</a></h1>
-    <br>
-    <h1><a href="{% url 'housekeeping_book:select_family' %}">우리 가족 가계부</a></h1>
 {% endblock %}

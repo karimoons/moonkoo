@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 
 from ..forms.transaction import TransactionForm, SearchForm
 
@@ -14,21 +15,38 @@ def transaction_list(request, code):
     family = Family.objects.get(id=request.session['current_family_id'])
     main_account = Account.objects.filter(family=family).get(code=code)
     ledgers = Ledger.objects.filter(slit__family=family).filter(account=main_account).order_by('slit__date')
+    balance_ledgers = ledgers
 
     form = SearchForm(request.GET)
     if form.is_valid():
         cd = form.cleaned_data
 
         if cd['start_date']:
+            balance_ledgers = balance_ledgers.filter(slit__date__lt=str(cd['start_date']))
+            if main_account.account in ['I', 'E']:
+                balance_ledgers = balance_ledgers.filter(slit__date__gte=str(datetime.date(cd['start_date'].year, 1, 1)))
+
             ledgers = ledgers.filter(slit__date__gte=str(cd['start_date']))
         if cd['end_date']:
             ledgers = ledgers.filter(slit__date__lte=str(cd['end_date']))
         if cd['memo']:
             ledgers = ledgers.filter(slit__memo__contains=cd['memo'])
+            balance_ledgers = balance_ledgers.filter(slit__memo__contains=cd['memo'])
         if cd['tag']:
             ledgers = ledgers.filter(tag__name__contains=cd['tag'])
+            balance_ledgers = balance_ledgers.filter(tag__name__contains=cd['tag'])
+        
+        init_balance = balance_ledgers.aggregate(Sum('amount'))['amount__sum'] or 0
+        balance = init_balance
+        balance_list = []
+        
+        for ledger in ledgers:
+            balance = balance + ledger.amount
+            balance_list.append(balance)
+        
+        zipped_ledgers = zip(ledgers, balance_list)
 
-    return render(request, 'housekeeping_book/transaction/transaction_list.html', {'main_account': main_account, 'ledgers': ledgers, 'form': form})
+    return render(request, 'housekeeping_book/transaction/transaction_list.html', {'main_account': main_account, 'init_balance': init_balance, 'zipped_ledgers': zipped_ledgers, 'form': form})
 
 @login_required
 def create_transaction(request):
