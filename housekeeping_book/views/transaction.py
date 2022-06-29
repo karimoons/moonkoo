@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 
+import pandas as pd
+
 from ..forms.transaction import TransactionForm, SearchForm
 
 from ..models import Family, Slit, Account, Tag, Ledger
@@ -49,6 +51,57 @@ def transaction_list(request, code):
     return render(request, 'housekeeping_book/transaction/transaction_list.html', {'main_account': main_account, 'init_balance': init_balance, 'zipped_ledgers': zipped_ledgers, 'form': form})
 
 @login_required
+def transaction_summary(request, code):
+    family = Family.objects.get(id=request.session['current_family_id'])
+    main_account = Account.objects.filter(family=family).get(code=code)
+    ledgers = Ledger.objects.filter(slit__family=family).filter(account=main_account).order_by('slit__date')
+    balance_ledgers = ledgers
+    tags = Tag.objects.filter(family=family)
+
+    url_parameter = {'code': code}
+
+    form = SearchForm(request.GET)
+    if form.is_valid():
+        cd = form.cleaned_data
+
+        if cd['start_date']:
+            balance_ledgers = balance_ledgers.filter(slit__date__lt=str(cd['start_date']))
+            ledgers = ledgers.filter(slit__date__gte=str(cd['start_date']))
+            
+            url_parameter['start_date'] = str(cd['start_date'])
+
+        if cd['end_date']:
+            ledgers = ledgers.filter(slit__date__lte=str(cd['end_date']))
+
+            url_parameter['end_date'] = str(cd['end_date'])
+    
+    df_balance_ledgers = pd.DataFrame(balance_ledgers.values())
+    try:
+        df_balance_ledgers_pt = df_balance_ledgers.pivot_table(values=['amount'], index=['tag_id'], aggfunc='sum')
+        df_balance_ledgers_pt.rename(columns={'amount': 'init_balance'}, inplace=True)
+    except:
+        df_balance_ledgers_pt = pd.DataFrame(columns=['tag_id', 'init_balance']).set_index('tag_id')
+
+    df_ledgers = pd.DataFrame(ledgers.values())
+    try:
+        df_ledgers_pt = df_ledgers.pivot_table(values=['amount'], index=['tag_id'], aggfunc='sum')
+    except:
+        df_ledgers_pt = pd.DataFrame(columns=['tag_id', 'amount']).set_index('tag_id')
+
+    df_summary = df_balance_ledgers_pt.join(df_ledgers_pt, how='outer').fillna(0)
+    df_summary['balance'] = df_summary['init_balance'] + df_summary['amount']
+
+    df_tags = pd.DataFrame(tags.values())
+    df_tags.rename(columns = {'id': 'tag_id', 'name': 'tag_name'}, inplace=True)
+    df_tags = df_tags.set_index('tag_id')
+
+    df_summary = df_summary.join(df_tags)
+
+    total = {'init_balance': df_summary['init_balance'].sum, 'amount': df_summary['amount'].sum, 'balance': df_summary['balance'].sum}
+
+    return render(request, 'housekeeping_book/transaction/transaction_summary.html', {'summary': df_summary, 'total': total, 'form': form, 'url_parameter': url_parameter})
+
+@login_required
 def create_transaction(request):
     if request.method == 'POST':
         form = TransactionForm(request.POST, current_family_id=request.session['current_family_id'])
@@ -82,7 +135,7 @@ def create_transaction(request):
             sub_ledger.save()
 
             end_date = slit.date
-            start_date = end_date - datetime.timedelta(days=30)
+            start_date = end_date - datetime.timedelta(days=7)
 
             base_url = reverse('housekeeping_book:transaction_list', args=(main_ledger.account.code, ))
             query_string = urlencode({'start_date': start_date, 'end_date': end_date})
@@ -138,7 +191,7 @@ def update_transaction(request, pk):
             sub_ledger.save()
 
             end_date = slit.date
-            start_date = end_date - datetime.timedelta(days=30)
+            start_date = end_date - datetime.timedelta(days=7)
 
             base_url = reverse('housekeeping_book:transaction_list', args=(main_ledger.account.code, ))
             query_string = urlencode({'start_date': start_date, 'end_date': end_date})

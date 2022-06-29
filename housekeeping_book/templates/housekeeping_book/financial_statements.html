@@ -28,7 +28,7 @@
         {% for index, item in asset.iterrows %}
             <tr>
                 <td>{{ index.1 }}</td>
-                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' index.0 %}?start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">{{ item.amount|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' index.0 %}?start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">{{ item.amount|intcomma }}</a></td>
             </tr>
         {% endfor %}
         <tr>
@@ -38,7 +38,7 @@
         {% for index, item in liability.iterrows %}
             <tr>
                 <td>{{ index.1 }}</td>
-                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' index.0 %}?start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">{{ item.amount|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' index.0 %}?start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}">{{ item.amount|intcomma }}</a></td>
             </tr>
         {% endfor %}
         <tr>

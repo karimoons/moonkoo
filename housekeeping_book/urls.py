@@ -29,6 +29,7 @@ urlpatterns = [
     path('tag/delete/<int:pk>/', tag.delete_tag, name='delete_tag'),
 
     path('transaction/list/<int:code>/', transaction.transaction_list, name='transaction_list'),
+    path('transaction/summary/<int:code>/', transaction.transaction_summary, name='transaction_summary'),
     path('transaction/create/', transaction.create_transaction, name='create_transaction'),
     path('transaction/update/<int:pk>/', transaction.update_transaction, name='update_transaction'),
     path('transaction/delete/<int:pk>/', transaction.delete_transaction, name='delete_transaction'),

@@ -1,0 +1,43 @@
+{% extends "hb_base_site.html" %}
+
+{% load static humanize %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'housekeeping_book:dashboard' %}">가계부홈</a>
+        >
+        <a href="{% url 'housekeeping_book:financial_statements' %}">재무제표 보기</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <h1>꼬리표별 거래요약</h1>
+
+    <form action="." method="get">
+        날짜: {{ form.start_date}} ~ {{ form.end_date }}
+        <input type="submit" value="찾기">
+    </form>
+
+    <table>
+        <tr>
+            <th>꼬리표</th>
+            <th>이월</th>
+            <th>증감</th>
+            <th>잔액</th>
+        </tr>
+        {% for index, item in summary.iterrows %}
+            <tr>
+                <td><a href="{% url 'housekeeping_book:transaction_list' url_parameter.code %}?start_date={{ url_parameter.start_date }}&end_date={{ url_parameter.end_date }}&tag={{ item.tag_name }}">{{ item.tag_name }}</a></td>
+                <td class="align-right{% if item.init_balance >= 0 %}{% else %} negative-number{% endif %}">{{ item.init_balance|intcomma }}</td>
+                <td class="align-right{% if item.amount >= 0 %}{% else %} negative-number{% endif %}">{{ item.amount|intcomma }}</td>
+                <td class="align-right{% if item.balance >= 0 %}{% else %} negative-number{% endif %}">{{ item.balance|intcomma }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td>합계</td>
+            <td class="align-right{% if total.init_balance >= 0 %}{% else %} negative-number{% endif %}">{{ total.init_balance|intcomma }}</td>
+            <td class="align-right{% if total.amount >= 0 %}{% else %} negative-number{% endif %}">{{ total.amount|intcomma }}</td>
+            <td class="align-right{% if total.balance >= 0 %}{% else %} negative-number{% endif %}">{{ total.balance|intcomma }}</td>
+        </tr>
+    </table>
+{% endblock %}
