@@ -15,6 +15,7 @@ def account_list(request):
         if form.is_valid():
             new_account = form.save(commit=False)
             new_account.family = Family.objects.get(id=request.session['current_family_id'])
+            new_account.modified_user = request.user
 
             try:
                 new_account.save()
@@ -36,6 +37,7 @@ def update_account(request, pk):
             account = form.save(commit=False)
             account.id = pk
             account.family = Family.objects.get(id=request.session['current_family_id'])
+            account.modified_user = request.user
 
             try:
                 account.save()
@@ -43,9 +45,10 @@ def update_account(request, pk):
             except:
                 messages.error(request, '계정코드 또는 계정과목은 중복될 수 없습니다.')
     else:
-        form = AccountForm(instance=Account.objects.get(id=pk))
+        account = Account.objects.get(id=pk)
+        form = AccountForm(instance=account)
 
-    return render(request, 'housekeeping_book/account/update_account.html', {'form': form, 'pk': pk})
+    return render(request, 'housekeeping_book/account/update_account.html', {'form': form, 'pk': pk, 'account': account})
 
 @login_required
 def delete_account(request, pk):

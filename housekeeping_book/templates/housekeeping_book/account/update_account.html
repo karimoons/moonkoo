@@ -18,6 +18,14 @@
                 <th>과목</th>
                 <td>{{ form.title }}</td>
             </tr>
+            <tr>
+                <td>최종수정일시</td>
+                <td>{{ account.modified_date }}</td>
+            </tr>
+            <tr>
+                <td>최종수정자</td>
+                <td>{{ account.modified_user }}</td>
+            </tr>
         </table>
         <input type="submit" value="저장">
         <a href="{% url 'housekeeping_book:delete_account' pk %}"><input type="button" value="삭제"></a>
