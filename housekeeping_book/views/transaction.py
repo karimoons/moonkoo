@@ -136,9 +136,10 @@ def create_transaction(request):
 
             end_date = slit.date
             start_date = end_date - datetime.timedelta(days=7)
+            tag = main_ledger.tag.name
 
             base_url = reverse('housekeeping_book:transaction_list', args=(main_ledger.account.code, ))
-            query_string = urlencode({'start_date': start_date, 'end_date': end_date})
+            query_string = urlencode({'start_date': start_date, 'end_date': end_date, 'tag': tag})
             url = '{}?{}'.format(base_url, query_string)
 
             return redirect(url)
@@ -192,9 +193,10 @@ def update_transaction(request, pk):
 
             end_date = slit.date
             start_date = end_date - datetime.timedelta(days=7)
+            tag = main_ledger.tag
 
             base_url = reverse('housekeeping_book:transaction_list', args=(main_ledger.account.code, ))
-            query_string = urlencode({'start_date': start_date, 'end_date': end_date})
+            query_string = urlencode({'start_date': start_date, 'end_date': end_date, 'tag': tag})
             url = '{}?{}'.format(base_url, query_string)
 
             return redirect(url)
