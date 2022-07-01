@@ -1,5 +1,9 @@
 {% extends "hb_base_site.html" %}
 
+{% load static %}
+
+{% block extrastyle %}<link rel="stylesheet" href="{% static 'css/account.css' %}">{% endblock %}
+
 {% block content %}
     <h1>계정과목 목록</h1>
 
