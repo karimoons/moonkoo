@@ -76,26 +76,22 @@ def transaction_summary(request, code):
             url_parameter['end_date'] = str(cd['end_date'])
     
     df_balance_ledgers = pd.DataFrame(balance_ledgers.values())
-    try:
-        df_balance_ledgers_pt = df_balance_ledgers.pivot_table(values=['amount'], index=['tag_id'], aggfunc='sum')
-        df_balance_ledgers_pt.rename(columns={'amount': 'init_balance'}, inplace=True)
-    except:
-        df_balance_ledgers_pt = pd.DataFrame(columns=['tag_id', 'init_balance']).set_index('tag_id')
+    if df_balance_ledgers.empty:
+        df_balance_ledgers_pt = pd.DataFrame(columns=['tag_id', 'init_balance'])
+    else:
+        df_balance_ledgers_pt = df_balance_ledgers.pivot_table(values=['amount'], index=['tag_id'], aggfunc='sum').reset_index().rename(columns={'amount': 'init_balance'})
 
     df_ledgers = pd.DataFrame(ledgers.values())
-    try:
-        df_ledgers_pt = df_ledgers.pivot_table(values=['amount'], index=['tag_id'], aggfunc='sum')
-    except:
-        df_ledgers_pt = pd.DataFrame(columns=['tag_id', 'amount']).set_index('tag_id')
+    if df_ledgers.empty:
+        df_ledgers_pt = pd.DataFrame(columns=['tag_id', 'amount'])
+    else:
+        df_ledgers_pt = df_ledgers.pivot_table(values=['amount'], index=['tag_id'], aggfunc='sum').reset_index()
 
-    df_summary = df_balance_ledgers_pt.join(df_ledgers_pt, how='outer').fillna(0)
+    df_summary = df_balance_ledgers_pt.merge(df_ledgers_pt, on='tag_id', how='outer').fillna(0)
     df_summary['balance'] = df_summary['init_balance'] + df_summary['amount']
 
-    df_tags = pd.DataFrame(tags.values())
-    df_tags.rename(columns = {'id': 'tag_id', 'name': 'tag_name'}, inplace=True)
-    df_tags = df_tags.set_index('tag_id')
-
-    df_summary = df_summary.join(df_tags)
+    df_tags = pd.DataFrame(tags.values()).rename(columns={'id': 'tag_id', 'name': 'tag_name'})
+    df_summary = df_summary.merge(df_tags, on='tag_id').sort_values(by=['tag_name'])
 
     total = {'init_balance': df_summary['init_balance'].sum, 'amount': df_summary['amount'].sum, 'balance': df_summary['balance'].sum}
 
