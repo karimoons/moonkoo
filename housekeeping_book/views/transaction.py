@@ -156,6 +156,17 @@ def update_transaction(request, pk):
     main_ledger = ledgers[0]
     sub_ledger = ledgers[1]
 
+    if request.GET.get('code'):
+        request.session['transaction_list_code'] = request.GET.get('code')
+    if request.GET.get('start_date'):
+        request.session['transaction_list_start_date'] = request.GET.get('start_date')
+    if request.GET.get('end_date'):
+        request.session['transaction_list_end_date'] = request.GET.get('end_date')
+    if request.GET.get('memo'):
+        request.session['transaction_list_memo'] = request.GET.get('memo')
+    if request.GET.get('tag'):
+        request.session['transaction_list_tag'] = request.GET.get('tag')
+
     if request.method == 'POST':
         form = TransactionForm(request.POST, current_family_id=request.session['current_family_id'])
 
@@ -191,12 +202,8 @@ def update_transaction(request, pk):
             main_ledger.save()
             sub_ledger.save()
 
-            end_date = slit.date
-            start_date = end_date - datetime.timedelta(days=7)
-            tag = main_ledger.tag
-
-            base_url = reverse('housekeeping_book:transaction_list', args=(main_ledger.account.code, ))
-            query_string = urlencode({'start_date': start_date, 'end_date': end_date, 'tag': tag})
+            base_url = reverse('housekeeping_book:transaction_list', args=(request.session.pop('transaction_list_code'), ))
+            query_string = urlencode({'start_date': request.session.pop('transaction_list_start_date', ''), 'end_date': request.session.pop('transaction_list_end_date', ''), 'memo': request.session.pop('transaction_list_memo', ''), 'tag': request.session.pop('transaction_list_tag', '')})
             url = '{}?{}'.format(base_url, query_string)
 
             return redirect(url)
