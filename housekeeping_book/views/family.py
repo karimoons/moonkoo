@@ -10,6 +10,7 @@ from ..models import Family, Account, Tag
 BASIC_ACCOUNT = {
     'code': [100, 110, 120, 200, 210, 300, 400, 410, 420, 430, 440, 450, 460, 510, 520, 530, 540, 550, 560, 570, 580, 590],
     'account': ['A', 'A', 'A', 'L', 'L', 'C', 'I', 'I', 'I', 'I', 'I', 'I', 'I', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E'],
+    'classification': ['C', 'C', 'NC', 'C', 'C', 'R', 'O', 'O', 'O', 'O', 'O', 'O', 'NO', 'O', 'O', 'O', 'O', 'O', 'O', 'NO', 'O', 'NO'],
     'title': ['저축', '주식', '부동산', '신용카드', '대출', '순자산', '근로소득', '콘텐츠소득', '사업소득', '부동산소득', '배당소득', '이자소득', '기타소득', '주거통신비', '보험의료비', '차량교통비', '식비', '생활용품비', '교육도서비', '모임경조사비', '이자비용', '기타비용'],
 }
 
@@ -36,7 +37,7 @@ def create_family(request):
             new_family.member.add(request.user)
 
             for num in range(len(BASIC_ACCOUNT['code'])):
-                Account.objects.create(family=new_family, code=BASIC_ACCOUNT['code'][num], account=BASIC_ACCOUNT['account'][num], title=BASIC_ACCOUNT['title'][num])
+                Account.objects.create(family=new_family, code=BASIC_ACCOUNT['code'][num], account=BASIC_ACCOUNT['account'][num], classification=BASIC_ACCOUNT['classification'][num], title=BASIC_ACCOUNT['title'][num])
             
             Tag.objects.create(family=new_family, name=new_family.name)
 

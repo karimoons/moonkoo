@@ -17,10 +17,18 @@ def account_list(request):
             new_account.family = Family.objects.get(id=request.session['current_family_id'])
             new_account.modified_user = request.user
 
-            try:
-                new_account.save()
-            except:
-                messages.error(request, '계정코드 또는 계정과목은 중복될 수 없습니다.')
+            if new_account.account in ['A', 'L'] and new_account.classification not in ['C', 'NC']:
+                messages.error(request, '자산 또는 부채 계정의 분류는 유동 또는 비유동만 선택할 수 있습니다.')
+            elif new_account.account == 'C' and new_account.classification not in ['R', 'UR']:
+                messages.error(request, '자본 계정의 분류는 실현 또는 미실현만 선택할 수 있습니다.')
+            elif new_account.account in ['I', 'E'] and new_account.classification not in ['O', 'NO']:
+                messages.error(request, '수익 또는 비용 계정의 분류는 경상 또는 비경상만 선택할 수 있습니다.')
+            else:
+                try:
+                    new_account.save()
+                    form = AccountForm()
+                except:
+                    messages.error(request, '계정코드 또는 계정과목은 중복될 수 없습니다.')
     else:
         form = AccountForm()
     
@@ -39,11 +47,18 @@ def update_account(request, pk):
             account.family = Family.objects.get(id=request.session['current_family_id'])
             account.modified_user = request.user
 
-            try:
-                account.save()
-                return redirect(reverse('housekeeping_book:account_list'))
-            except:
-                messages.error(request, '계정코드 또는 계정과목은 중복될 수 없습니다.')
+            if account.account in ['A', 'L'] and account.classification not in ['C', 'NC']:
+                messages.error(request, '자산 또는 부채 계정의 분류는 유동 또는 비유동만 선택할 수 있습니다.')
+            elif account.account == 'C' and account.classification not in ['R', 'UR']:
+                messages.error(request, '자본 계정의 분류는 실현 또는 미실현만 선택할 수 있습니다.')
+            elif account.account in ['I', 'E'] and account.classification not in ['O', 'NO']:
+                messages.error(request, '수익 또는 비용 계정의 분류는 경상 또는 비경상만 선택할 수 있습니다.')
+            else:
+                try:
+                    account.save()
+                    return redirect(reverse('housekeeping_book:account_list'))
+                except:
+                    messages.error(request, '계정코드 또는 계정과목은 중복될 수 없습니다.')
     else:
         account = Account.objects.get(id=pk)
         form = AccountForm(instance=account)
