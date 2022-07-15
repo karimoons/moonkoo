@@ -17,9 +17,19 @@ class Account(models.Model):
         ('E', '비용'),
     ]
 
+    CLASSIFICATION_CHOICES = [
+        ('C', '유동'),
+        ('NC', '비유동'),
+        ('R', '실현'),
+        ('UR', '미실현'),
+        ('F', '고정'),
+        ('V', '변동'),
+    ]
+
     family = models.ForeignKey(Family, on_delete=models.CASCADE, verbose_name='가족')
     code = models.IntegerField(verbose_name='계정코드')
     account = models.CharField(max_length=2, verbose_name='계정', choices=ACCOUNT_CHOICES)
+    classification = models.CharField(max_length=2, verbose_name='분류', choices=CLASSIFICATION_CHOICES)
     title = models.CharField(max_length=30, verbose_name='계정과목')
 
     modified_date = models.DateTimeField(auto_now=True, editable=False, null=True, verbose_name='최종수정일시')
