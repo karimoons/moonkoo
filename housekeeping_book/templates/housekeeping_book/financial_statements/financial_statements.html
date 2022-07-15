@@ -1,0 +1,175 @@
+{% extends "hb_base_site.html" %}
+
+{% load static humanize %}
+
+{% block extrastyle %}<link rel="stylesheet" href="{% static 'css/financial_statements.css' %}">{% endblock %}
+
+{% block content %}
+    <form action="." method="post">
+        {% csrf_token %}
+        <p>
+            {{ form.unit }}
+            기준일자:
+            {{ form.date }}
+            <input type="submit" value="조회">
+        </p>
+    </form>
+
+    <br>
+
+    <table>
+        <tr>
+            <th colspan="3">재무상태표</th>
+        </tr>
+        <tr>
+            <td colspan="3">기준 : {{ end_date1 }} 현재</td>
+        </tr>
+        <tr>
+            <td colspan="3">비교 : {{ end_date0 }} 현재</td>
+        </tr>
+        <tr>
+            <th>계정과목</th>
+            <th>{{ end_date1.year }}년 {{ end_date1.month }}월</th>
+            <th>{{ end_date0.year }}년 {{ end_date0.month }}월</th>
+        </tr>
+        <tr>
+            <th class="align-left">I. 유동자산</th>
+            <th class="align-right">{{ total.current_asset.current|intcomma }}</th>
+            <th class="align-right">{{ total.current_asset.previous|intcomma }}</th>
+        </tr>
+        {% for index, item in current_asset.iterrows %}
+            <tr>
+                <td class="align-left">&nbsp&nbsp&nbsp{{ item.title }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' item.code %}?start_date={{ start_date1|date:'Y-m-d' }}&end_date={{ end_date1|date:'Y-m-d' }}">{{ item.amount1|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' item.code %}?start_date={{ start_date0|date:'Y-m-d' }}&end_date={{ end_date0|date:'Y-m-d' }}">{{ item.amount0|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th class="align-left">II. 비유동자산</th>
+            <th class="align-right">{{ total.noncurrent_asset.current|intcomma }}</th>
+            <th class="align-right">{{ total.noncurrent_asset.previous|intcomma }}</th>
+        </tr>
+        {% for index, item in noncurrent_asset.iterrows %}
+            <tr>
+                <td class="align-left">&nbsp&nbsp&nbsp{{ item.title }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' item.code %}?start_date={{ start_date1|date:'Y-m-d' }}&end_date={{ end_date1|date:'Y-m-d' }}">{{ item.amount1|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' item.code %}?start_date={{ start_date0|date:'Y-m-d' }}&end_date={{ end_date0|date:'Y-m-d' }}">{{ item.amount0|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th class="align-left">자산총계</th>
+            <th class="align-right">{{ total.asset.current|intcomma }}</th>
+            <th class="align-right">{{ total.asset.previous|intcomma }}</th>
+        </tr>
+        <tr>
+            <th class="align-left">I. 유동부채</th>
+            <th class="align-right">{{ total.current_liability.current|intcomma }}</th>
+            <th class="align-right">{{ total.current_liability.previous|intcomma }}</th>
+        </tr>
+        {% for index, item in current_liability.iterrows %}
+            <tr>
+                <td class="align-left">&nbsp&nbsp&nbsp{{ item.title }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' item.code %}?start_date={{ start_date1|date:'Y-m-d' }}&end_date={{ end_date1|date:'Y-m-d' }}">{{ item.amount1|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' item.code %}?start_date={{ start_date0|date:'Y-m-d' }}&end_date={{ end_date0|date:'Y-m-d' }}">{{ item.amount0|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th class="align-left">II. 비유동부채</th>
+            <th class="align-right">{{ total.noncurrent_liability.current|intcomma }}</th>
+            <th class="align-right">{{ total.noncurrent_liability.previous|intcomma }}</th>
+        </tr>
+        {% for index, item in noncurrent_liability.iterrows %}
+            <tr>
+                <td class="align-left">&nbsp&nbsp&nbsp{{ item.title }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' item.code %}?start_date={{ start_date1|date:'Y-m-d' }}&end_date={{ end_date1|date:'Y-m-d' }}">{{ item.amount1|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_summary' item.code %}?start_date={{ start_date0|date:'Y-m-d' }}&end_date={{ end_date0|date:'Y-m-d' }}">{{ item.amount0|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th class="align-left">부채총계</th>
+            <th class="align-right">{{ total.liability.current|intcomma }}</th>
+            <th class="align-right">{{ total.liability.previous|intcomma }}</th>
+        </tr>
+        <tr>
+            <th class="align-left">순자산</th>
+            <th class="align-right{% if total.net_asset.current >= 0 %}{% else %} negative-number{% endif %}">{{ total.net_asset.current|intcomma }}</th>
+            <th class="align-right{% if total.net_asset.previous >= 0 %}{% else %} negative-number{% endif %}">{{ total.net_asset.previous|intcomma }}</th>
+        </tr>
+
+        <tr><td colspan="3"></td></tr>
+
+        <tr>
+            <th colspan="3">손익계산서</th>
+        </tr>
+        <tr>
+            <td colspan="3">기준 : {{ start_date1 }}~{{ end_date1 }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">비교 : {{ start_date0 }}~{{ end_date0 }}</td>
+        </tr>
+        <tr>
+            <th>계정과목</th>
+            <th>{{ end_date1.year }}년 {{ end_date1.month }}월</th>
+            <th>{{ end_date0.year }}년{% if form.cleaned_data.unit == 'Y' %}{% else %} {{ end_date0.month }}월{% endif %}</th>
+        </tr>
+        <tr>
+            <th class="align-left">I. 고정수익</th>
+            <th class="align-right">{{ total.fixed_income.current|intcomma }}</th>
+            <th class="align-right">{{ total.fixed_income.previous|intcomma }}</th>
+        </tr>
+        {% for index, item in fixed_income.iterrows %}
+            <tr>
+                <td class="align-left">&nbsp&nbsp&nbsp{{ item.title }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' item.code %}?start_date={{ start_date1|date:'Y-m-d' }}&end_date={{ end_date1|date:'Y-m-d' }}">{{ item.amount1|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' item.code %}?start_date={{ start_date0|date:'Y-m-d' }}&end_date={{ end_date0|date:'Y-m-d' }}">{{ item.amount0|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th class="align-left">II. 고정비용</th>
+            <th class="align-right">{{ total.fixed_expense.current|intcomma }}</th>
+            <th class="align-right">{{ total.fixed_expense.previous|intcomma }}</th>
+        </tr>
+        {% for index, item in fixed_expense.iterrows %}
+            <tr>
+                <td class="align-left">&nbsp&nbsp&nbsp{{ item.title }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' item.code %}?start_date={{ start_date1|date:'Y-m-d' }}&end_date={{ end_date1|date:'Y-m-d' }}">{{ item.amount1|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' item.code %}?start_date={{ start_date0|date:'Y-m-d' }}&end_date={{ end_date0|date:'Y-m-d' }}">{{ item.amount0|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th class="align-left">III. 고정손익</th>
+            <th class="align-right{% if total.fixed_profit.current >= 0 %}{% else %} negative-number{% endif %}">{{ total.fixed_profit.current|intcomma }}</th>
+            <th class="align-right{% if total.fixed_profit.previous >= 0 %}{% else %} negative-number{% endif %}">{{ total.fixed_profit.previous|intcomma }}</th>
+        </tr>
+        <tr>
+            <th class="align-left">IV. 변동수익</th>
+            <th class="align-right">{{ total.variable_income.current|intcomma }}</th>
+            <th class="align-right">{{ total.variable_income.previous|intcomma }}</th>
+        </tr>
+        {% for index, item in variable_income.iterrows %}
+            <tr>
+                <td class="align-left">&nbsp&nbsp&nbsp{{ item.title }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' item.code %}?start_date={{ start_date1|date:'Y-m-d' }}&end_date={{ end_date1|date:'Y-m-d' }}">{{ item.amount1|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' item.code %}?start_date={{ start_date0|date:'Y-m-d' }}&end_date={{ end_date0|date:'Y-m-d' }}">{{ item.amount0|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th class="align-left">V. 변동비용</th>
+            <th class="align-right">{{ total.variable_expense.current|intcomma }}</th>
+            <th class="align-right">{{ total.variable_expense.previous|intcomma }}</th>
+        </tr>
+        {% for index, item in variable_expense.iterrows %}
+            <tr>
+                <td class="align-left">&nbsp&nbsp&nbsp{{ item.title }}</td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' item.code %}?start_date={{ start_date1|date:'Y-m-d' }}&end_date={{ end_date1|date:'Y-m-d' }}">{{ item.amount1|intcomma }}</a></td>
+                <td class="align-right"><a href="{% url 'housekeeping_book:transaction_list' item.code %}?start_date={{ start_date0|date:'Y-m-d' }}&end_date={{ end_date0|date:'Y-m-d' }}">{{ item.amount0|intcomma }}</a></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th class="align-left">VI. 순손익</th>
+            <th class="align-right{% if total.net_income.current >= 0 %}{% else %} negative-number{% endif %}">{{ total.net_income.current|intcomma }}</th>
+            <th class="align-right{% if total.net_income.previous >= 0 %}{% else %} negative-number{% endif %}">{{ total.net_income.previous|intcomma }}</th>
+        </tr>
+    </table>
+
+{% endblock %}

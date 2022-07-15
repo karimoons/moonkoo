@@ -4,6 +4,7 @@ from .views import family
 from .views import account
 from .views import tag
 from .views import transaction
+from .views import financial_statements
 
 from .views import views
 
@@ -34,5 +35,5 @@ urlpatterns = [
     path('transaction/update/<int:pk>/', transaction.update_transaction, name='update_transaction'),
     path('transaction/delete/<int:pk>/', transaction.delete_transaction, name='delete_transaction'),
 
-    path('financial-statements/', views.financial_statements, name='financial_statements'),
+    path('financial-statements/', financial_statements.financial_statements, name='financial_statements'),
 ]

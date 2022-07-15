@@ -22,8 +22,8 @@ class Account(models.Model):
         ('NC', '비유동'),
         ('R', '실현'),
         ('UR', '미실현'),
-        ('O', '경상'),
-        ('NO', '비경상'),
+        ('F', '고정'),
+        ('V', '변동'),
     ]
 
     family = models.ForeignKey(Family, on_delete=models.CASCADE, verbose_name='가족')

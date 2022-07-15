@@ -21,8 +21,8 @@ def account_list(request):
                 messages.error(request, '자산 또는 부채 계정의 분류는 유동 또는 비유동만 선택할 수 있습니다.')
             elif new_account.account == 'C' and new_account.classification not in ['R', 'UR']:
                 messages.error(request, '자본 계정의 분류는 실현 또는 미실현만 선택할 수 있습니다.')
-            elif new_account.account in ['I', 'E'] and new_account.classification not in ['O', 'NO']:
-                messages.error(request, '수익 또는 비용 계정의 분류는 경상 또는 비경상만 선택할 수 있습니다.')
+            elif new_account.account in ['I', 'E'] and new_account.classification not in ['F', 'V']:
+                messages.error(request, '수익 또는 비용 계정의 분류는 고정 또는 변동만 선택할 수 있습니다.')
             else:
                 try:
                     new_account.save()
@@ -51,8 +51,8 @@ def update_account(request, pk):
                 messages.error(request, '자산 또는 부채 계정의 분류는 유동 또는 비유동만 선택할 수 있습니다.')
             elif account.account == 'C' and account.classification not in ['R', 'UR']:
                 messages.error(request, '자본 계정의 분류는 실현 또는 미실현만 선택할 수 있습니다.')
-            elif account.account in ['I', 'E'] and account.classification not in ['O', 'NO']:
-                messages.error(request, '수익 또는 비용 계정의 분류는 경상 또는 비경상만 선택할 수 있습니다.')
+            elif account.account in ['I', 'E'] and account.classification not in ['F', 'V']:
+                messages.error(request, '수익 또는 비용 계정의 분류는 고정 또는 변동만 선택할 수 있습니다.')
             else:
                 try:
                     account.save()
