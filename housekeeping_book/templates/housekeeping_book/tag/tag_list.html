@@ -9,10 +9,12 @@
     <table>
         <tr>
             <th>꼬리표이름</th>
+            <th>메모</th>
         </tr>
         {% for tag in object_list %}
             <tr>
                 <td><a href="{% url 'housekeeping_book:update_tag' tag.id %}">{{ tag.name }}</a></td>
+                <td>{{ tag.memo }}</td>
             </tr>
         {% endfor %}
     </table>

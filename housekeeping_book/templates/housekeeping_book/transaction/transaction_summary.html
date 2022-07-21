@@ -21,6 +21,7 @@
     <table>
         <tr>
             <th>꼬리표</th>
+            <th>메모</th>
             <th>이월</th>
             <th>증감</th>
             <th>잔액</th>
@@ -28,13 +29,14 @@
         {% for index, item in summary.iterrows %}
             <tr>
                 <td><a href="{% url 'housekeeping_book:transaction_list' url_parameter.code %}?start_date={{ url_parameter.start_date }}&end_date={{ url_parameter.end_date }}&tag={{ item.tag_name }}">{{ item.tag_name }}</a></td>
+                <td><a href="{% url 'housekeeping_book:update_tag' item.tag_id %}">{{ item.memo }}</a></td>
                 <td class="align-right{% if item.init_balance >= 0 %}{% else %} negative-number{% endif %}">{{ item.init_balance|intcomma }}</td>
                 <td class="align-right{% if item.amount >= 0 %}{% else %} negative-number{% endif %}">{{ item.amount|intcomma }}</td>
                 <td class="align-right{% if item.balance >= 0 %}{% else %} negative-number{% endif %}">{{ item.balance|intcomma }}</td>
             </tr>
         {% endfor %}
         <tr>
-            <td>합계</td>
+            <td colspan="2">합계</td>
             <td class="align-right{% if total.init_balance >= 0 %}{% else %} negative-number{% endif %}">{{ total.init_balance|intcomma }}</td>
             <td class="align-right{% if total.amount >= 0 %}{% else %} negative-number{% endif %}">{{ total.amount|intcomma }}</td>
             <td class="align-right{% if total.balance >= 0 %}{% else %} negative-number{% endif %}">{{ total.balance|intcomma }}</td>

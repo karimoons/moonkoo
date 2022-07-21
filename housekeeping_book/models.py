@@ -64,6 +64,7 @@ class Slit(models.Model):
 class Tag(models.Model):
     family = models.ForeignKey(Family, on_delete=models.CASCADE, verbose_name='가족')
     name = models.CharField(max_length=30, verbose_name='꼬리표')
+    memo = models.CharField(max_length=50, verbose_name='메모')
 
     modified_date = models.DateTimeField(auto_now=True, editable=False, null=True, verbose_name='최종수정일시')
     modified_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='최종수정자')
