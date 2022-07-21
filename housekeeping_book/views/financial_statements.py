@@ -13,6 +13,12 @@ def financial_statements(request):
         form = FinancialStatementsForm(request.POST)
         if form.is_valid():
             end_date1 = form.cleaned_data['date']
+
+            request.session['fs_unit'] = form.cleaned_data['unit']
+            print(request.session['fs_unit'])
+            request.session['fs_end_date'] = str(end_date1)
+            print(request.session['fs_end_date'])
+
             if form.cleaned_data['unit'] == 'Y':
                 start_date1 = datetime.date(end_date1.year, 1, 1)
                 end_date0 = start_date1 - datetime.timedelta(days=1)
@@ -22,7 +28,10 @@ def financial_statements(request):
                 end_date0 = start_date1 - datetime.timedelta(days=1)
                 start_date0 = datetime.date(end_date0.year, end_date0.month, 1)
     else:
-        form = FinancialStatementsForm()
+        if request.session.get('fs_unit') and request.session.get('fs_end_date'):
+            form = FinancialStatementsForm(initial={'unit': request.session.get('fs_unit'), 'date': request.session.get('fs_end_date')})
+        else:
+            form = FinancialStatementsForm()
 
         end_date1 = datetime.date.today()
         start_date1 = datetime.date(end_date1.year, end_date1.month, 1)
