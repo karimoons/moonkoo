@@ -15,9 +15,7 @@ def financial_statements(request):
             end_date1 = form.cleaned_data['date']
 
             request.session['fs_unit'] = form.cleaned_data['unit']
-            print(request.session['fs_unit'])
             request.session['fs_end_date'] = str(end_date1)
-            print(request.session['fs_end_date'])
 
             if form.cleaned_data['unit'] == 'Y':
                 start_date1 = datetime.date(end_date1.year, 1, 1)
