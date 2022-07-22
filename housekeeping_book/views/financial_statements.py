@@ -12,26 +12,29 @@ def financial_statements(request):
     if request.method == 'POST':
         form = FinancialStatementsForm(request.POST)
         if form.is_valid():
+            unit = form.cleaned_data['unit']
             end_date1 = form.cleaned_data['date']
 
             request.session['fs_unit'] = form.cleaned_data['unit']
             request.session['fs_end_date'] = str(end_date1)
 
-            if form.cleaned_data['unit'] == 'Y':
-                start_date1 = datetime.date(end_date1.year, 1, 1)
-                end_date0 = start_date1 - datetime.timedelta(days=1)
-                start_date0 = datetime.date(end_date0.year, 1, 1)
-            else:
-                start_date1 = datetime.date(end_date1.year, end_date1.month, 1)
-                end_date0 = start_date1 - datetime.timedelta(days=1)
-                start_date0 = datetime.date(end_date0.year, end_date0.month, 1)
     else:
         if request.session.get('fs_unit') and request.session.get('fs_end_date'):
             form = FinancialStatementsForm(initial={'unit': request.session.get('fs_unit'), 'date': request.session.get('fs_end_date')})
+
+            unit = request.session.get('fs_unit')
+            end_date1 = datetime.datetime.strptime(request.session.get('fs_end_date'), '%Y-%m-%d').date()
+
         else:
             form = FinancialStatementsForm()
 
-        end_date1 = datetime.date.today()
+            end_date1 = datetime.date.today()
+
+    if unit == 'Y':
+        start_date1 = datetime.date(end_date1.year, 1, 1)
+        end_date0 = start_date1 - datetime.timedelta(days=1)
+        start_date0 = datetime.date(end_date0.year, 1, 1)
+    else:
         start_date1 = datetime.date(end_date1.year, end_date1.month, 1)
         end_date0 = start_date1 - datetime.timedelta(days=1)
         start_date0 = datetime.date(end_date0.year, end_date0.month, 1)
